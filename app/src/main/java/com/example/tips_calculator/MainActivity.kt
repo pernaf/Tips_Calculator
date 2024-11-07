@@ -1,10 +1,9 @@
 package com.example.tips_calculator
 
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tips_calculator.databinding.ActivityMainBinding
-import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,33 +15,65 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+        var percentage: Int = 0
         binding.rbOption1.setOnCheckedChangeListener { _, isChecked ->
-            println("perna option 1: $isChecked")
+            if (isChecked) {
+                percentage = 10
+            }
+
         }
 
         binding.rbOption2.setOnCheckedChangeListener { _, isChecked ->
-            println("perna option 2: $isChecked")
+            if (isChecked) {
+                percentage = 15
+            }
         }
 
         binding.rbOption3.setOnCheckedChangeListener { _, isChecked ->
-            println("perna option 3:$isChecked")
+            if (isChecked) {
+                percentage = 20
+            }
         }
 
         binding.btnCalcular.setOnClickListener {
 
-            val valorTotal : Float = binding.editTotalConta.text.toString().toFloat()
-            val numeroPessoas : Float = binding.editNumeroPessoas.text.toString().toFloat()
+            val totalTemp = binding.editTotalConta.text
+            val numPessoasTemp = binding.editNumeroPessoas.text
 
-            val calculo = valorTotal / numeroPessoas
+            if (totalTemp?.isEmpty() == true ||
+                numPessoasTemp?.isEmpty() == true
+            ) {
+                Snackbar
+                    .make(
+                        binding.editTotalConta, "Preencha todos os campos",
+                        Snackbar.LENGTH_LONG
+                    )
+                    .show()
+            } else {
+                val valorTotal: Float = totalTemp.toString().toFloat()
+                val numeroPessoas: Int = numPessoasTemp.toString().toInt()
 
-            println(calculo)
+                val contaIndiv = valorTotal / numeroPessoas
+                val tip = contaIndiv * percentage / 100
 
+                val contaIndivTip = contaIndiv + tip
+
+                binding.tVResult.text = "Conta com gorgeta: $contaIndivTip"
+
+                println("Resultado " + contaIndivTip)
+
+            }
         }
 
         binding.btbClean.setOnClickListener {
 
-            println("tô aqui tb!")
-        }
+            binding.tVResult.text = ""
+            binding.editTotalConta.setText ("")
+            binding.editNumeroPessoas.setText("")
+            binding.rbOption1.isChecked = false
+            binding.rbOption2.isChecked = false
+            binding.rbOption3.isChecked = false
 
+        }
     }
 }
